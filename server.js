@@ -3,7 +3,11 @@ const nodemailer = require("nodemailer");
 const path = require("path");
 const app = express();
 const bodyParser = require('body-parser');
-const domain = 'http://localhost:3000'
+
+const domain = process.env.DOMAIN;
+const ownMail = process.env.EMAIL;
+const ownMailPass = process.env.EPASSWORD;
+
 const jwt = require('jsonwebtoken');
 const ejs = require('ejs');
 const fs = require('fs');
@@ -64,7 +68,7 @@ app.get('/generate-link', (req, res) => {
     const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Время в секундах
     const token = jwt.sign({ exp: expiration }, secretKey);
 
-    const link = `${req.protocol}://${req.get('host')}/protected_page?token=${token}`;
+    const link = `${domain}protected_page?token=${token}`;
 
     res.send(link);
 });
@@ -152,8 +156,8 @@ app.post('/api/feedback', async (req, res) => {
             port: 465,
             secure: true,
             auth: {
-                user: "partsa660@gmail.com",
-                pass: "avjv kjgv qvra espq",
+                user: `${ownMail}`,
+                pass: `${ownMailPass}`,
             },
         });
         const { name, phone, email } = req.body;
@@ -166,8 +170,8 @@ app.post('/api/feedback', async (req, res) => {
         });
 
         await transporter.sendMail({
-            from: "ООО 'AutoParts' <partsa660@gmail.com>",
-            to: "partsa660@gmail.com",
+            from: `ООО 'AutoParts' <${ownMail}>`,
+            to: `${ownMail}`,
             subject: `Новая заявка`,
             text: email,
             html: `
@@ -240,7 +244,7 @@ app.post('/api/feedback', async (req, res) => {
 
         });
         await transporter.sendMail({
-            from: "ООО 'AutoParts' <partsa660@gmail.com>",
+            from: `ООО 'AutoParts' <${ownMail}>`,
             to: email,
             subject: `Вы оставили заявку`,
             text: email,
