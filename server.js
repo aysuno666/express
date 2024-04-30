@@ -1,198 +1,176 @@
-console.log('server Start')
 const express = require("express");
 const nodemailer = require("nodemailer");
-const path = require("path"); 
+const path = require("path");
 const app = express();
-const domain = 'http://localhost:3000/'
-
+const bodyParser = require('body-parser');
+const domain = 'http://localhost:3000'
 const jwt = require('jsonwebtoken');
 const ejs = require('ejs');
 const fs = require('fs');
 
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const secretKey = 'gfdgr';
 const interval = 24 * 60 * 60 * 1000;
 
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
-testGenerateAndSendLink();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(express.static(path.join(__dirname, 'public'))); 
+async function generateAndSendLink() {
+    try {
+        // Генерация новой ссылки
+        const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Текущее время + 24 часа
+        //(24 * 60 * 60 * 1000)
+        const token = jwt.sign({ exp: expiration }, secretKey);
 
+        // Сохранение ссылки в базе данных
+        await prisma.Token.create({
+            data: {
+                token,
+                expiration: new Date(expiration)
+            }
+        });
+
+        // Отправка ссылки на почту
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "partsa660@gmail.com",
+                pass: "avjv kjgv qvra espq",
+            },
+        });
+        const link = `${domain}/protected_page?token=${token}`;
+        await transporter.sendMail({
+            from: "ООО 'AutoParts' <partsa660@gmail.com>",
+            to: "partsa660@gmail.com",
+            subject: `Новая ссылка доступа`,
+            html: `Ссылка на защищенную страницу: <a href="${link}">${link}</a>`
+        });
+
+        console.log('New link generated and sent:', link);
+    } catch (error) {
+        console.error('Error generating and sending link:', error);
+    }
+}
+
+setInterval(generateAndSendLink, interval)
 
 app.get('/generate-link', (req, res) => {
-  const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Время в секундах
-  const token = jwt.sign({ exp: expiration }, secretKey);
-  
-  const link = `${req.protocol}://${req.get('host')}/protected_page?token=${token}`;
-  
-  res.send(link);
+    const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Время в секундах
+    const token = jwt.sign({ exp: expiration }, secretKey);
+
+    const link = `${req.protocol}://${req.get('host')}/protected_page?token=${token}`;
+
+    res.send(link);
 });
 
 
-async function generateAndSendLink() {
-  try {
-    // Генерация новой ссылки
-    const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Текущее время + 24 часа
-    //(24 * 60 * 60 * 1000)
-    const token = jwt.sign({ exp: expiration }, secretKey);
-
-    // Сохранение ссылки в базе данных
-    await prisma.Token.create({
-      data: {
-        token,
-        expiration: new Date(expiration)
-      }
-    });
-
-    // Отправка ссылки на почту
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "partsa660@gmail.com",
-        pass: "avjv kjgv qvra espq",
-      },
-    });
-    const link = `${domain}/protected_page?token=${token}`;
-    await transporter.sendMail({
-      from: "ООО 'AutoParts' <partsa660@gmail.com>",
-      to: "partsa660@gmail.com",
-      subject: `Новая ссылка доступа`,
-      html: `Ссылка на защищенную страницу: <a href="${link}">${link}</a>`
-    });
-
-    console.log('New link generated and sent:', link);
-    // res.send(link)
-  } catch (error) {
-    console.error('Error generating and sending link:', error);
-  }
-}
-
-setInterval(generateAndSendLink, interval);
-async function testGenerateAndSendLink() {
-  try {
-    await generateAndSendLink();
-  } catch (error) {
-    console.error('Error during test:', error);
-  }
-}
-
-function test(){
-  console.log('TSESRS')
-}
-// Вызов функции
-testGenerateAndSendLink();
-
-test()
-app.get('/protected_page',  (req, res) => {
-  const token = req.query.token;
+app.get('/protected_page', (req, res) => {
+    const token = req.query.token;
     if (!token) {
         return res.status(401).send('Access denied. Token missing.');
     }
 
     jwt.verify(token, secretKey, async (err, decoded) => {
-      if (err) {
-        return res.status(401).send('Access denied. Invalid token.');
-    }
-
-    if (Date.now() >= decoded.exp * 1000) {
-        return res.status(401).send('Access denied. Token expired.');
-    }
-
-    try {
-        // Выполняем запрос к базе данных для получения обратной связи
-        const feedback = await prisma.FeedbackModel.findMany({
-          orderBy: {
-            createdAt: 'desc',
-          }
-        });
-        if (!feedback) {
-            return res.status(404).send('Feedback not found.');
+        if (err) {
+            return res.status(401).send('Access denied. Invalid token.');
         }
-            
-        // Путь к файлу feedback.ejs
-        const feedbackTemplatePath = path.join(__dirname, 'public', 'feedback.ejs');
-        
-        // Прочитать шаблон из файла
-        const template = fs.readFileSync(feedbackTemplatePath, 'utf-8');
-        
-        // Рендерить шаблон с данными
-        const renderedHTML = ejs.render(template, { feedback });
 
-        // Отправить HTML клиенту
-        res.send(renderedHTML);
-      } catch (error) {
-          console.error('Error:', error);
-          res.status(500).send('Internal server error.');
-      }
+        if (Date.now() >= decoded.exp * 1000) {
+            return res.status(401).send('Access denied. Token expired.');
+        }
+
+        try {
+            const feedback = await prisma.FeedbackModel.findMany({
+                orderBy: {
+                    createdAt: 'desc',
+                }
+            });
+            if (!feedback) {
+                return res.status(404).send('Feedback not found.');
+            }
+
+            const feedbackTemplatePath = path.join(__dirname, 'public', 'feedback.ejs');
+
+            const template = fs.readFileSync(feedbackTemplatePath, 'utf-8');
+
+            const renderedHTML = ejs.render(template, { feedback });
+
+            res.send(renderedHTML);
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).send('Internal server error.');
+        }
     });
 });
 
 app.put('/update_status/:id', async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
+    const { id } = req.params;
+    const { status } = req.body;
 
-  try {
-    const updatedFeedback = await prisma.FeedbackModel.update({
-      where: { id: parseInt(id) },
-      data: { status }
-    });
+    try {
+        const updatedFeedback = await prisma.FeedbackModel.update({
+            where: { id: parseInt(id) },
+            data: { status }
+        });
 
-    return res.json(updatedFeedback);
-  } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).send('Internal server error.');
-  }
+        return res.json(updatedFeedback);
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).send('Internal server error.');
+    }
 });
 
 app.post('/delete_feedback', async (req, res) => {
-  const { id } = req.body;
+    const { id } = req.body;
 
-  try {
-    await prisma.FeedbackModel.delete({
-      where: {
-        id: parseInt(req.body.id)
-      }
-    });
-          res.status(204).send(); // Успешный статус без содержимого (No Content)
-  } catch (error) {
-      console.error('Ошибка при удалении заявки:', error);
-      res.status(500).send('Внутренняя ошибка сервера');
-  }
+    try {
+        await prisma.FeedbackModel.delete({
+            where: {
+                id: parseInt(req.body.id)
+            }
+        });
+        res.status(204).send(); // Успешный статус без содержимого (No Content)
+    } catch (error) {
+        console.error('Ошибка при удалении заявки:', error);
+        res.status(500).send('Внутренняя ошибка сервера');
+    }
 });
 
-app.post("/api/feedback", async (req, res) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "partsa660@gmail.com",
-        pass: "avjv kjgv qvra espq",
-      },
-    });
+app.post('/api/feedback', async (req, res) => {
+    try {
+        if (!req.body || !req.body.name || !req.body.phone || !req.body.email) {
+            return res.status(400).send('Invalid request. Missing required fields.');
+        }
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: "partsa660@gmail.com",
+                pass: "avjv kjgv qvra espq",
+            },
+        });
+        const { name, phone, email } = req.body;
+        const feedback = await prisma.feedbackModel.create({
+            data: {
+                name,
+                phone,
+                email,
+            },
+        });
 
-    
-    const { name, phone, email, link  } = req.body;
-    const feedback = await prisma.feedbackModel.create({
-      data: {
-        name,
-        phone,
-        email,
-      },
-    });
-    console.log('Feedback created:', feedback);
-    // res.status(201).json(feedback);
-    
-    // const protectedPage = domain + 'protected_page?token=' + encodeURIComponent(token);
-    await transporter.sendMail({
-      from: "ООО 'AutoParts' <partsa660@gmail.com>",
-      to: "partsa660@gmail.com",
-      subject: `Новая заявка`,
-      text: email,
-      html: `
+        await transporter.sendMail({
+            from: "ООО 'AutoParts' <partsa660@gmail.com>",
+            to: "partsa660@gmail.com",
+            subject: `Новая заявка`,
+            text: email,
+            html: `
       <!DOCTYPE html>
       <html lang="ru">
       <head>
@@ -256,19 +234,17 @@ app.post("/api/feedback", async (req, res) => {
           </tbody>
          </table>
           </div>
-         <p>Посмотреть все заявки: </p>
-         <p id="linkContainer"><a href="${link}"> ${link} </a></p>
       </body>
       </html>
         `,
-    
-    });
-    await transporter.sendMail({
-      from: "ООО 'AutoParts' <partsa660@gmail.com>",
-      to: email,
-      subject: `Вы оставили заявку`,
-      text: email,
-      html: `
+
+        });
+        await transporter.sendMail({
+            from: "ООО 'AutoParts' <partsa660@gmail.com>",
+            to: email,
+            subject: `Вы оставили заявку`,
+            text: email,
+            html: `
       <!DOCTYPE html>
       <html lang="ru">
       <head>
@@ -311,15 +287,16 @@ app.post("/api/feedback", async (req, res) => {
       </body>
       </html> 
         `,
-    })
-    return res.status(200).json({  status: 200, message: "Success" });
-  } catch (e) {
-    console.error("Error:", e); 
-    return res
-      .status(500)
-      .send({ status: 500, message: "Internal server error" });
-  }
+        })
+        return res.status(200).json({ status: 200, message: "Success" });
+    } catch (e) {
+        console.error("Error:", e);
+        return res
+            .status(500)
+            .send({ status: 500, message: "Internal server error" });
+    }
 });
-app.listen(3000, ()=> {
+
+app.listen(3000, () => {
     console.log('server start')
 });

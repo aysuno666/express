@@ -7,22 +7,12 @@ var btn = document.querySelectorAll('.btn');
 
 const toasterErr = document.querySelector('.toasterErr');
 
-function generateToken() {
-  return fetch('/generate-link')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to generate token');
-      }
-      return response.text();
-    });
-}
-
 window.addEventListener("load", () => {
   const loader = document.querySelector(".loader");
   setTimeout(() => {
     loader.classList.add("loader-hidden");
     loader.addEventListener("transitionend", () => {
-      document.body.removeChild("loader");
+      document.body.removeChild(loader);
     });
   });
 });
@@ -41,14 +31,15 @@ function zayavkaError() {
   });
 
   toasterErr.classList.remove("hidden");
+
   btn.forEach(element => {
     element.removeAttribute('disabled');
   });
+
   setTimeout(hideToasterErr, 1100);
 }
 
 function zayavka(e) {
-  
   btnloader.forEach(element => {
     element.classList.add("btn-loader-hidden");
   });
@@ -56,14 +47,13 @@ function zayavka(e) {
   toaster.classList.remove("hidden");
   const feedbackFormData = new FormData(e.target);
   const feedback = Object.fromEntries(feedbackFormData);
-
   btn.forEach(element => {
     element.removeAttribute('disabled');
   });
 
   e.target.reset();
   setTimeout(hideToaster, 1100);
-  setTimeout(() => sendFeedbackWithToken(feedback), 1100);
+  setTimeout(() => sendFeedback(feedback), 1100);
 }
 
 function validate(e) {
@@ -80,18 +70,6 @@ function validate(e) {
   return false;
 }
 
-
-function sendFeedbackWithToken(feedback) {
-  generateToken()
-    .then(link => {
-      feedback.link = link; // Добавляем токен к данным формы
-      sendFeedback(feedback); // Отправляем данные формы на сервер
-    })
-    .catch(error => {
-      console.error('Error generating token:', error);
-    });
-}
-
 function sendFeedback(feedback) {
   fetch("/api/feedback", {
       method: "POST",
@@ -106,7 +84,9 @@ function sendFeedback(feedback) {
       }
       return response.json();
     })
-    .then((data) => {})
+    .then((data) => {
+      console.log("Feedback sent successfully:", data);
+    })
     .catch((error) => {
       console.error("Error:", error);
     });
