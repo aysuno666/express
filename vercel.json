@@ -1,13 +1,7 @@
 {
-    "routes": [
-      { "handle": "filesystem" },
-      {
-        "src": "/api/.*",
-        "dest": "server.js"
-      },
-      {
-        "src": ".*",
-        "dest": "server.js"
-      }
+    "rewrites": [
+      { "source": "/api/feedback", "destination": "/api/feedback" },
+      { "source": "/generate-link", "destination": "/generate-link" },
+      { "source": "/protected_page", "destination": "/protected_page" }
     ]
-}
+  }
