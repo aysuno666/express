@@ -1,9 +1,9 @@
 const express = require("express");
+require('dotenv').config();
 const nodemailer = require("nodemailer");
 const path = require("path");
 const app = express();
 const bodyParser = require('body-parser');
-require('dotenv').config();
 const domain = process.env.DOMAIN;
 const ownMail = process.env.EMAIL;
 const ownMailPass = process.env.EPASSWORD;
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+generateAndSendLink()
 async function generateAndSendLink() {
     try {
         // Генерация новой ссылки

@@ -71,7 +71,7 @@ function validate(e) {
 }
 
 function sendFeedback(feedback) {
-  fetch("/api/feedback", {
+  fetch('/api/feedback', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
