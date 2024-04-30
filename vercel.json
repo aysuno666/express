@@ -1,7 +1,15 @@
 {
-    "rewrites": [
-      { "source": "/api/feedback", "destination": "/api/feedback" },
-      { "source": "/generate-link", "destination": "/generate-link" },
-      { "source": "/protected_page", "destination": "/protected_page" }
+    "version": 2,
+    "builds": [
+     {
+         "src": "./index.js",
+         "use": "@vercel/node"
+     }
+    ],
+    "routes": [
+     {
+         "src": "/(.*)",
+         "dest": "/"
+     }
     ]
-  }
+ }
