@@ -85,7 +85,7 @@ function sendFeedback(feedback) {
       return response.json();
     })
     .then((data) => {
-      console.log("Feedback sent successfully:", data);
+      console.log("Feedback sent successfully");
     })
     .catch((error) => {
       console.error("Error:", error);
