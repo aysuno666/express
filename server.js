@@ -1,12 +1,14 @@
-const express = require("express");
 require('dotenv').config();
+const express = require("express");
 const nodemailer = require("nodemailer");
 const path = require("path");
-const app = express();
 const bodyParser = require('body-parser');
+
 const domain = process.env.DOMAIN;
 const ownMail = process.env.EMAIL;
 const ownMailPass = process.env.EPASSWORD;
+
+const app = express();
 
 const jwt = require('jsonwebtoken');
 const ejs = require('ejs');
@@ -22,7 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 generateAndSendLink()
+
 async function generateAndSendLink() {
     try {
         const expiration = Math.floor(Date.now() / 1000) + (24 * 60 * 60 * 1000); // Текущее время + 24 часа
@@ -36,7 +40,6 @@ async function generateAndSendLink() {
             }
         });
 
-        // Отправка ссылки на почту
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
             port: 465,
@@ -130,14 +133,13 @@ app.put('/update_status/:id', async (req, res) => {
 
 app.post('/delete_feedback', async (req, res) => {
     const { id } = req.body;
-
     try {
         await prisma.FeedbackModel.delete({
             where: {
                 id: parseInt(req.body.id)
             }
         });
-        res.status(204).send(); // Успешный статус без содержимого (No Content)
+        res.status(204).send(); 
     } catch (error) {
         console.error('Ошибка при удалении заявки:', error);
         res.status(500).send('Внутренняя ошибка сервера');
