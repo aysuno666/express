@@ -25,12 +25,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 generateAndSendLink()
 async function generateAndSendLink() {
     try {
-        // Генерация новой ссылки
-        const expiration = Math.floor(Date.now() / 1000) + (60 * 60); // Текущее время + 24 часа
-        //(24 * 60 * 60 * 1000)
+        const expiration = Math.floor(Date.now() / 1000) + (24 * 60 * 60 * 1000); // Текущее время + 24 часа
+
         const token = jwt.sign({ exp: expiration }, secretKey);
 
-        // Сохранение ссылки в базе данных
         await prisma.Token.create({
             data: {
                 token,
