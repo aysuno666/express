@@ -1,14 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEST</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <title>h23</title>
 </head>
+
 <body>
-    <h1>
-        
-        HTML Test
-    </h1>
+    <div class="toaster hidden"><svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-check">
+            <path d="M20 6 9 17l-5-5" />
+        </svg>Заявка успешно отправлена!</div>
+    <div class="toasterErr hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-ban">
+            <circle cx="12" cy="12" r="10" />
+            <path d="m4.9 4.9 14.2 14.2" />
+        </svg>
+            При отправке произошла ошибка.
+    </div>
+    <header id="header" class="header">
+        <div class="header_inner">
+            <div class="logo">
+                <a href="#">
+                    <img class="logo_img" src="assets/img/RLbnPKehbLjwm0lhEmw38lFoGk4pi0UlTMEvVkQd.png" alt="" srcset="">
+                </a>
+            </div>
+            <nav class="header_nav">
+                <li><a class="header_nav_link" href="#">Главная</a></li>
+                <li><a class="header_nav_link" href="#about">О нас</a></li>
+                <li><a class="header_nav_link" href="#advantages">Преимущества</a></li>
+                <li><a class="header_nav_link" href="#contacts">Контакты</a></li>
+            </nav>
+            <div class="menu">
+                <input type="checkbox" id="burger-checkbox" class="burger-checkbox">
+                <label for="burger-checkbox" class="burger"></label>
+                <ul class="menu-list">
+                    <li><a href="#" class="menu-item">Главная</a>
+                    <li>
+                    <li><a href="#about" class="menu-item">О нас</a>
+                    <li>
+                    <li><a href="#advantages" class="menu-item">Преимущества</a>
+                    <li>
+                    <li><a href="#contacts" class="menu-item">Контакты</a>
+                    <li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="wrapper">
+        <div id="hello_wrapper" class="hello_wrapper">
+            <div class="hello_bg">
+                <div class="bg_overlay"></div>
+            </div>
+            <div class="hello_content lp-wrapp">
+                <div class="hello_content-left">
+                    <div>
+
+                        <h1>Качественные​​​​​​​ <span class="colortext-blue">запчасти</span> от официальных диллеров
+                        </h1>
+                        <p class="suptext">Заполните форму и получите консультацию по подбору запчастей</p>
+                    </div>
+                    <span class="line"></span>
+                    <div class="hello-items-list">
+
+                        <div class="hello-items">
+                            <div class="hello_item-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-book-text">
+                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                    <path d="M8 7h6" />
+                                    <path d="M8 11h8" />
+                                </svg>
+                            </div>
+                            <p>Большой ассортимент деталей в наличии и под заказ</p>
+                        </div>
+                        <div class="hello-items">
+                            <div class="hello_item-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-user-round">
+                                    <circle cx="12" cy="8" r="5" />
+                                    <path d="M20 21a8 8 0 0 0-16 0" />
+                                </svg>
+                            </div>
+                            <p>Большой ассортимент деталей в наличии и под заказ</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form">
+                    <h1>Оформить заявку</h1>
+                    <form id="form">
+                        <label for="name"> <span class="colortext-red">*</span>Имя</label>
+                        <input class="inputName" name="name" type="text">
+                        <label for="phone"> <span class="colortext-red">*</span>Телефон</label>
+                        <input name="phone" class="inputPhone" type="tel">
+                        <label for="email"><span class="colortext-red">*</span> Почта</label>
+                        <input name="email" class="inputEmail" type="email">
+
+                        <div class="form_btn_wrapper">
+                            <button type="submit" class="form_btn btn">
+                                <div class="btn-loader btn-loader-hidden"></div>
+                                <span>
+                                    Отправить
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="suphello">
+            <a href="#about">
+                <div class="arrow"></div>
+            </a>
+        </div>
+        <div id="about" class="about">
+            <div class="about_bg">
+                <div class="bg_overlay"></div>
+            </div>
+            <div class="about_wrapper lp-wrapp">
+                <h1 class="about_title"> С нами легко сотрудничать</h1>
+                <div class="about_main">
+                    <div class="about_main-item">
+                        <div class="circle">1</div>
+                        <div class="about_main-item-text">
+                            <h2> Оставьте заявку</h2>
+                            <p class="suptext">Вы звоните менеджеру в наш магазин или оставляете заявку на сайте</p>
+                        </div>
+                    </div>
+                    <div class="about_main-item">
+                        <div class="circle">2</div>
+                        <div class="about_main-item-text">
+                            <h2> Подбор деталей</h2>
+                            <p class="suptext">Подбираем запчасти и делаем Вам индивидуальное предложение</p>
+                        </div>
+                    </div>
+                    <div class="about_main-item">
+                        <div class="circle">3</div>
+                        <div class="about_main-item-text">
+                            <h2>Предоплата</h2>
+                            <p class="suptext">Вы делаете предоплату любым удобным для Вас способом</p>
+                        </div>
+                    </div>
+                    <div class="about_main-item">
+                        <div class="circle">4</div>
+                        <div class="about_main-item-text">
+                            <h2>Доставляем товар</h2>
+                            <p class="suptext">Осуществляем доставку по указанному вами адресу</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn_wrapper">
+                    <a href="#" class="btn">
+                        оставить заявку
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id="advantages" class="advantages">
+            <div class="advantages_inner">
+                <div class="advantages_wrapper">
+                    <div class="advantages_title">
+                        <h1>Наши преимущества</h1>
+                    </div>
+                    <div class="advantages_main">
+                        <div class="advantages_main-item">
+                            <img src="assets/img/309.svg" alt="" srcset="">
+                            <h2>Высокое качество услуг</h2>
+                            <p>Применяем строгие стандарты качества</p>
+                        </div>
+                        <div class="advantages_main-item">
+                            <img src="assets/img/308.svg" alt="" srcset="">
+                            <h2>Низкие цены</h2>
+                            <p>Рассчитаем расходы в минимальную цену</p>
+                        </div>
+                        <div class="advantages_main-item">
+                            <img src="assets/img/310.svg" alt="" srcset="">
+                            <h2>Соблюдаем сроки</h2>
+                            <p>Доставим товар в указанное время</p>
+                        </div>
+                    </div>
+                    <div class="wrapper_btn_advantages">
+                        <p>Оставьте заявку и мы перезвоним вам в ближайшее время</p>
+                        <button class="btn btn_advantages modal_open">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="contacts" class="contacts">
+            <div class="contacts_map">
+                <iframe class="contacts_map-map"
+                    src="https://yandex.ru/map-widget/v1/?um=constructor%3A9fdf4bbed95a312bda49701a5c8f3f110a685fffd6efd61293a1b4e6d6a6b16a&amp;source=constructor"
+                    height="400" frameborder="0"></iframe>
+            </div>
+            <div class="contacts_main">
+                <div class="contacts_list">
+                    <div class="contacts_title">
+                        <h1>Контакты</h1>
+                        <p class="suptext2">Вы можете связаться с нами любым удобным способом или заказать звонок</p>
+                    </div>
+                    <div class="contacts_list-num">
+                        <h1>Наши телефоны</h1>
+                        <a href="tel:+71234088888">+7 123 408-88-88</a>
+                        <a href="tel:+71234088888">+7 123 408-88-88</a>
+                    </div>
+                    <div class="mail">
+                        <h1>Почта</h1>
+                        <a href="mailto:mail@example.com"> mail@example.com</a>
+                    </div>
+                    <div class="call">
+                        <h1>Заказать звонок</h1>
+                        <p class="suptext2">Свяжемся с вами в ближайшее время</p>
+                        <button class="btn btn_tel modal_open">
+                            Заказать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-content ">
+            <span class="close">&times;</span>
+            <div>
+                <div class="modal_title">
+
+                    <h1>Заказать звонок</h1>
+                    <p class="suptext2"> Введите данные для заказа обратного звонка</p>
+                </div>
+                <form id="formId">
+                    <label for="name"> <span class="colortext-red">*</span>Имя</label>
+                    <input class="inputName" name="name" type="text">
+                    <label for="phone"> <span class="colortext-red">*</span>Телефон</label>
+                    <input class="inputPhone" name="phone" type="tel">
+                    <label for="email"><span class="colortext-red">*</span>Почта</label>
+                    <input class="inputEmail" name="email" type="email">
+
+                    <div class="btn_wrapper">
+                        <button type="submit" class="form_btn btn">
+                            <div class="btn-loader btn-loader-hidden"></div>
+                            <span>
+                                Отправить
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="loader"></div>
+    <script>
+        var modal = document.getElementById("modal");
+        var btns = document.querySelectorAll('.modal_open');
+        var span = document.getElementsByClassName("close")[0];
+
+        for (let elem of btns) {
+            elem.onclick = function () {
+                modal.style.display = "block";
+            };
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const checkbox = document.getElementById('burger-checkbox');
+                checkbox.checked = false;
+            });
+        });
+    </script>
+    <script src="./script.js"></script>
 </body>
+
 </html>
